@@ -177,7 +177,7 @@ body {
     .auth-card .brand h1 { font-size: 2rem; color: #333; }
     .auth-card .brand p  { color: #888; font-size: 0.9rem; margin-top: 4px; }
 
-    /* Tabs */
+    
     .tabs {
       display: flex;
       border-bottom: 2px solid #eee;
@@ -201,11 +201,11 @@ body {
       border-bottom-color: #667eea;
     }
 
-    /* Panels */
+    
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    /* Form */
+  
     .form-group { margin-bottom: 16px; }
     .form-group label {
       display: block;
@@ -241,7 +241,7 @@ body {
     }
     .submit-btn:hover { opacity: 0.88; }
 
-    /* Divider */
+    
     .divider {
       display: flex;
       align-items: center;
@@ -257,7 +257,7 @@ body {
       background: #eee;
     }
 
-    /* Google button */
+  
     .google-btn {
       display: flex;
       align-items: center;
@@ -280,7 +280,7 @@ body {
     }
     .google-btn img { width: 20px; }
 
-    /* Message */
+  
     .msg {
       font-size: 0.82rem;
       text-align: center;
