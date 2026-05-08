@@ -1,0 +1,51 @@
+type User @table {
+  displayName: String!
+  email: String!
+  userType: String!
+  createdAt: Timestamp!
+  photoUrl: String
+  address: String
+}
+
+type Farm @table {
+  name: String!
+  location: String!
+  description: String!
+  createdAt: Timestamp!
+  contactEmail: String
+  contactPhone: String
+  pickupInstructions: String
+  farmer: User!
+}
+
+type Crop @table {
+  name: String!
+  pricePerUnit: Float!
+  unitType: String!
+  availableQuantity: Int!
+  isOrganic: Boolean!
+  createdAt: Timestamp!
+  description: String
+  imageUrl: String
+  farm: Farm!
+}
+
+type Order @table {
+  orderDate: Timestamp!
+  totalAmount: Float!
+  status: String!
+  deliveryOrPickup: String!
+  createdAt: Timestamp!
+  deliveryAddress: String
+  deliveryFee: Float
+  customer: User!
+  farm: Farm!
+}
+
+type OrderItem @table {
+  quantity: Int!
+  priceAtTimeOfOrder: Float!
+  createdAt: Timestamp!
+  order: Order!
+  crop: Crop!
+}

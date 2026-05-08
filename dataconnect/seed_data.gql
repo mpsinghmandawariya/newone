@@ -1,0 +1,83 @@
+mutation SeedData @transaction @auth(level: PUBLIC, insecureReason: "Seed data is publicly accessible for populating the database.") {
+  user_insertMany(data: [
+    {
+      id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+      displayName: "Alice Smith",
+      email: "alice@example.com",
+      userType: "customer",
+      createdAt: "2023-10-26T10:00:00Z"
+    },
+    {
+      id: "b1cffc99-9c0b-4ef8-bb6d-6bb9bd380b22",
+      displayName: "Bob Johnson",
+      email: "bob@example.com",
+      userType: "farmer",
+      createdAt: "2023-10-26T10:05:00Z"
+    }
+  ])
+  farm_insertMany(data: [
+    {
+      id: "c2debc99-9c0b-4ef8-bb6d-6bb9bd380c33",
+      name: "Green Acres Farm",
+      location: "Farmville, USA",
+      description: "A small organic farm producing fresh produce.",
+      createdAt: "2023-10-26T10:10:00Z",
+      contactEmail: "greenacres@example.com",
+      farmerId: "b1cffc99-9c0b-4ef8-bb6d-6bb9bd380b22"
+    }
+  ])
+  crop_insertMany(data: [
+    {
+      id: "d3efbc99-9c0b-4ef8-bb6d-6bb9bd380d44",
+      name: "Organic Carrots",
+      pricePerUnit: 2.50,
+      unitType: "lb",
+      availableQuantity: 100,
+      isOrganic: true,
+      createdAt: "2023-10-26T10:15:00Z",
+      description: "Freshly harvested organic carrots.",
+      farmId: "c2debc99-9c0b-4ef8-bb6d-6bb9bd380c33"
+    },
+    {
+      id: "e4fabc99-9c0b-4ef8-bb6d-6bb9bd380e55",
+      name: "Heirloom Tomatoes",
+      pricePerUnit: 3.75,
+      unitType: "lb",
+      availableQuantity: 50,
+      isOrganic: false,
+      createdAt: "2023-10-26T10:20:00Z",
+      description: "Delicious heirloom tomatoes, perfect for salads.",
+      farmId: "c2debc99-9c0b-4ef8-bb6d-6bb9bd380c33"
+    }
+  ])
+  order_insertMany(data: [
+    {
+      id: "f501bc99-9c0b-4ef8-bb6d-6bb9bd380f66",
+      orderDate: "2023-10-26T11:00:00Z",
+      totalAmount: 12.50,
+      status: "pending",
+      deliveryOrPickup: "pickup",
+      createdAt: "2023-10-26T11:00:00Z",
+      customerId: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+      farmId: "c2debc99-9c0b-4ef8-bb6d-6bb9bd380c33"
+    }
+  ])
+  orderItem_insertMany(data: [
+    {
+      id: "a612bc99-9c0b-4ef8-bb6d-6bb9bd380a77",
+      quantity: 2,
+      priceAtTimeOfOrder: 2.50,
+      createdAt: "2023-10-26T11:05:00Z",
+      orderId: "f501bc99-9c0b-4ef8-bb6d-6bb9bd380f66",
+      cropId: "d3efbc99-9c0b-4ef8-bb6d-6bb9bd380d44"
+    },
+    {
+      id: "b723bc99-9c0b-4ef8-bb6d-6bb9bd380b88",
+      quantity: 1,
+      priceAtTimeOfOrder: 3.75,
+      createdAt: "2023-10-26T11:06:00Z",
+      orderId: "f501bc99-9c0b-4ef8-bb6d-6bb9bd380f66",
+      cropId: "e4fabc99-9c0b-4ef8-bb6d-6bb9bd380e55"
+    }
+  ])
+}

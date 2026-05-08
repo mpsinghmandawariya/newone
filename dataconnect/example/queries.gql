@@ -1,0 +1,83 @@
+query ListAllFarms @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  farms {
+    id
+    name
+    location
+    description
+    contactEmail
+    contactPhone
+    pickupInstructions
+    createdAt
+    farmer {
+      id
+      displayName
+      email
+    }
+  }
+}
+
+query GetFarmAndCrops($farmId: UUID!) @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  farm(id: $farmId) {
+    id
+    name
+    location
+    description
+    contactEmail
+    contactPhone
+    pickupInstructions
+    createdAt
+    crops_on_farm {
+      id
+      name
+      pricePerUnit
+      unitType
+      availableQuantity
+      isOrganic
+      description
+      imageUrl
+      createdAt
+    }
+  }
+}
+
+mutation CreateNewCrop($farmId: UUID!, $name: String!, $pricePerUnit: Float!, $unitType: String!, $availableQuantity: Int!, $isOrganic: Boolean!, $description: String, $imageUrl: String) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  crop_insert(data: {
+    farmId: $farmId,
+    name: $name,
+    pricePerUnit: $pricePerUnit,
+    unitType: $unitType,
+    availableQuantity: $availableQuantity,
+    isOrganic: $isOrganic,
+    description: $description,
+    imageUrl: $imageUrl
+  }) {
+    id
+  }
+}
+
+query GetUserOrders($customerId: UUID!) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  orders(where: {customerId: {eq: $customerId}}) {
+    id
+    orderDate
+    totalAmount
+    status
+    deliveryOrPickup
+    deliveryAddress
+    deliveryFee
+    createdAt
+    farm {
+      id
+      name
+    }
+    orderItems_on_order {
+      id
+      quantity
+      priceAtTimeOfOrder
+      crop {
+        id
+        name
+        unitType
+      }
+    }
+  }
+}
