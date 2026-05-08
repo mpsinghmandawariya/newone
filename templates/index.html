@@ -3,17 +3,197 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login – CalcApp</title>
+  <title>CalcApp – Sign In</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .auth-card {
+      background: white;
+      padding: 40px 36px;
+      border-radius: 20px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+      width: 380px;
+    }
+
+    .auth-card .brand {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .auth-card .brand h1 { font-size: 2rem; color: #333; }
+    .auth-card .brand p  { color: #888; font-size: 0.9rem; margin-top: 4px; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #eee;
+      margin-bottom: 24px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      background: none;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #aaa;
+      cursor: pointer;
+      transition: color 0.2s;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    .tab-btn.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    /* Panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Form */
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .form-group input:focus { border-color: #667eea; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 4px;
+    }
+    .submit-btn:hover { opacity: 0.88; }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0;
+      color: #bbb;
+      font-size: 0.82rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #eee;
+    }
+
+    /* Google button */
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 11px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #444;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .google-btn:hover {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(102,126,234,0.2);
+    }
+    .google-btn img { width: 20px; }
+
+    /* Message */
+    .msg {
+      font-size: 0.82rem;
+      text-align: center;
+      margin-top: 14px;
+      min-height: 18px;
+    }
+    .msg.error { color: #e74c3c; }
+    .msg.success { color: #27ae60; }
+  </style>
 </head>
 <body>
-  <div class="login-card">
-    <h1>🧮 CalcApp</h1>
-    <p>Sign in to access the calculator</p>
-    <button class="google-btn" onclick="signInWithGoogle()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-      Sign in with Google
-    </button>
+  <div class="auth-card">
+    <div class="brand">
+      <h1>🧮 CalcApp</h1>
+      <p>Your smart calculator, secured</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+      <button class="tab-btn"        onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div class="tab-panel active" id="panel-login">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="••••••••" />
+      </div>
+      <button class="submit-btn" onclick="emailLogin()">Login</button>
+
+      <div class="divider">or</div>
+      <button class="google-btn" onclick="googleSignIn()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+        Continue with Google
+      </button>
+      <div class="msg" id="login-msg"></div>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div class="tab-panel" id="panel-register">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="reg-name" placeholder="John Doe" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="reg-email" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="reg-password" placeholder="Min. 6 characters" />
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="reg-confirm" placeholder="Repeat password" />
+      </div>
+      <button class="submit-btn" onclick="registerUser()">Create Account</button>
+
+      <div class="divider">or</div>
+      <button class="google-btn" onclick="googleSignIn()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+        Sign up with Google
+      </button>
+      <div class="msg" id="reg-msg"></div>
+    </div>
   </div>
 
   <!-- Firebase SDKs -->
@@ -21,16 +201,85 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="/firebase-init.js"></script>
   <script>
-    // If already logged in, go straight to calculator
+    // Redirect if already logged in
     auth.onAuthStateChanged(user => {
       if (user) window.location.href = '/calculator';
     });
 
-    function signInWithGoogle() {
-      auth.signInWithPopup(provider)
-        .then(() => { window.location.href = '/calculator'; })
-        .catch(err => alert('Login failed: ' + err.message));
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach((b, i) =>
+        b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'))
+      );
+      document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+      document.getElementById('panel-register').classList.toggle('active', tab === 'register');
     }
+
+    function showMsg(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.className = 'msg ' + type;
+    }
+
+    function emailLogin() {
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      if (!email || !password) return showMsg('login-msg', 'Please fill in all fields.', 'error');
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => window.location.href = '/calculator')
+        .catch(err => showMsg('login-msg', friendlyError(err.code), 'error'));
+    }
+
+    function registerUser() {
+      const name     = document.getElementById('reg-name').value.trim();
+      const email    = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirm  = document.getElementById('reg-confirm').value;
+
+      if (!name || !email || !password || !confirm)
+        return showMsg('reg-msg', 'Please fill in all fields.', 'error');
+      if (password.length < 6)
+        return showMsg('reg-msg', 'Password must be at least 6 characters.', 'error');
+      if (password !== confirm)
+        return showMsg('reg-msg', 'Passwords do not match.', 'error');
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(cred => cred.user.updateProfile({ displayName: name }))
+        .then(() => {
+          showMsg('reg-msg', 'Account created! Redirecting...', 'success');
+          setTimeout(() => window.location.href = '/calculator', 1000);
+        })
+        .catch(err => showMsg('reg-msg', friendlyError(err.code), 'error'));
+    }
+
+    function googleSignIn() {
+      auth.signInWithPopup(provider)
+        .then(() => window.location.href = '/calculator')
+        .catch(err => {
+          const msgId = document.getElementById('panel-login').classList.contains('active') ? 'login-msg' : 'reg-msg';
+          showMsg(msgId, friendlyError(err.code), 'error');
+        });
+    }
+
+    function friendlyError(code) {
+      const map = {
+        'auth/user-not-found':       'No account found with this email.',
+        'auth/wrong-password':       'Incorrect password.',
+        'auth/email-already-in-use': 'This email is already registered.',
+        'auth/invalid-email':        'Invalid email address.',
+        'auth/weak-password':        'Password is too weak.',
+        'auth/popup-closed-by-user': 'Sign-in popup was closed.',
+        'auth/too-many-requests':    'Too many attempts. Try again later.',
+      };
+      return map[code] || 'Something went wrong. Please try again.';
+    }
+
+    // Allow Enter key to submit
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      if (document.getElementById('panel-login').classList.contains('active')) emailLogin();
+      else registerUser();
+    });
   </script>
 </body>
 </html>
